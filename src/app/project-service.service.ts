@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ProjectService {
-  private apiUrl = 'https://localhost:44370/api/ProjectsAPI'; // replace with your API URL
+  private apiUrl = 'https://myprojectmanagerwebappapi.azurewebsites.net/api/ProjectsAPI'; // replace with your API URL
 
   constructor(private http: HttpClient) { }
 
