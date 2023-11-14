@@ -1,0 +1,28 @@
+<div class="container">
+    <div class="app-project-list" >
+        <div class="project-list-element" *ngFor="let project of projects" (click)="onProjectSelected(project)">
+            <p class="project-list-element-text">{{ project.name }}</p>
+        </div>
+    </div>
+    <div class="app-project-details-container">
+        <div class="app-project-details"*ngIf="selectedProject">
+            <p class="project-details-text-name">Name: {{ selectedProject.name }}</p>
+            <p class="project-details-text-description">Description: {{ selectedProject.description }}</p>
+            <div class="project-details-todolistlist">
+                <div class="add-todo">
+                    <form [formGroup]="todoForm" (ngSubmit)="onSubmit()">
+                        <input type="text" formControlName="name" placeholder="Project name">
+                        <button type="submit">Submit</button>
+                      </form>
+                </div>
+                <div cdkDropList (cdkDropListDropped)="drop($event)">
+                    <div class="todo-item" *ngFor="let todo of todoList" cdkDrag>
+                      <input type="checkbox" [(ngModel)]="todo.isComplete" (change)="updateIsComplete($event, todo)">
+                      <p>{{ todo.name }}</p>
+                      <button (click)="deleteTodo(todo)">Delete</button>
+                    </div>
+                  </div>
+            </div>
+        </div>
+    </div>
+</div>

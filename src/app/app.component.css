@@ -1,0 +1,11 @@
+.topbar {
+    font-size: large;
+    background-color: grey;
+    height: 64px;
+}
+
+.topbar-text {
+    margin: 1vh;
+    font-weight: bold;
+    color: black;
+}

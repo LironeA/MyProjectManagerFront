@@ -1,0 +1,16 @@
+<form [formGroup]="projectForm" (ngSubmit)="onSubmit()">
+    <label>
+      Project Name:
+      <input type="text" formControlName="name">
+      <div *ngIf="projectForm.controls.name.invalid && (projectForm.controls.name.dirty || projectForm.controls.name.touched)">
+        Name is required.
+      </div>
+    </label>
+  
+    <label>
+      Project Description:
+      <input type="text" formControlName="description">
+    </label>
+  
+    <button type="submit" [disabled]="projectForm.invalid">Submit</button>
+  </form>
