@@ -72,7 +72,6 @@ export class ProjectsPageComponent {
   onProjectSelected(project: Project) {
     this.selectedProject = project;
     this.todoListServiceService.getTodoList().subscribe(todoList => {
-      
       this.todoList = todoList.filter(todoList => todoList.projectId === project.id).sort((a, b) => (a.order || 0) - (b.order || 0));
       console.log(this.todoList);
     });
@@ -86,10 +85,10 @@ export class ProjectsPageComponent {
         name: this.todoForm.value.name || '',
         description: '',
         isComplete: false,
-        highlight: false
+        highlight: false,
       };
       this.todoListServiceService.createTodo (newTodo).subscribe(todo => {
-        this.todoList.push(todo);
+        this.todoList.push(newTodo);
         this.todoForm.reset();
       });
     }
