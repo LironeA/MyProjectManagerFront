@@ -11,6 +11,13 @@
       Project Description:
       <input type="text" formControlName="description">
     </label>
+
+    <label>
+      User:
+      <select formControlName="user">
+        <option *ngFor="let user of users" [value]="user.id">{{user.name}}</option>
+      </select>
+    </label>
   
     <button type="submit" [disabled]="projectForm.invalid">Submit</button>
   </form>

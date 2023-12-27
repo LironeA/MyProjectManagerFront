@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Project, Todo } from '../models';
 import { ProjectService } from '../project-service.service';
-import { TodoListServiceService } from '../todo-list-service.service';
+import { TodoListService } from '../todo-list-service.service';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Validators } from '@angular/forms';
 import { interval } from 'rxjs';
@@ -21,7 +21,7 @@ export class ProjectsPageComponent {
   todoForm = new FormGroup({
     name: new FormControl('', Validators.required),
   });
-  constructor(private projectService: ProjectService, private todoListServiceService: TodoListServiceService) { }
+  constructor(private projectService: ProjectService, private todoListServiceService: TodoListService) { }
   
   ngOnInit() {
     this.projectService.getProjects().subscribe(projects => this.projects = projects);
@@ -34,18 +34,39 @@ export class ProjectsPageComponent {
       this.projects = projects;
     });
 
-  interval(10000)
+    interval(10000)
     .pipe(
       startWith(0),
       switchMap(() => this.todoListServiceService.getTodoList())
     )
-    .subscribe(todos => {
+    .subscribe(newTodos => {
       if (!this.selectedProject) {
-        this.todoList = todos;
         return;
       }
-      this.todoList = todos.filter(todo => todo.projectId === (this.selectedProject ? this.selectedProject.id : -1)).sort((a, b) => (a.order || 0) - (b.order || 0));
+      newTodos = newTodos.filter(todo => todo.projectId === (this.selectedProject ? this.selectedProject.id : -1)).sort((a, b) => (a.order || 0) - (b.order || 0));
+      this.todoList = this.highlightChangedTodos(this.todoList, newTodos);
     });
+  }
+
+  highlightChangedTodos(oldTodos: Todo[], newTodos: Todo[]): Todo[] {
+    let highlightedTodos: Todo[] = [];
+  
+    for (let newTodo of newTodos) {
+      let oldTodo = oldTodos.find(todo => todo.id === newTodo.id);
+      if (oldTodo) {
+        for (let key in newTodo) {
+          if (key in oldTodo && newTodo[key as keyof Todo] !== oldTodo[key as keyof Todo]) {
+            newTodo.highlight = true;
+            setTimeout(() => {
+              newTodo.highlight = false;
+            }, 1000);
+            break;
+          }
+        }
+      }
+      highlightedTodos.push(newTodo);
+    }
+    return highlightedTodos;
   }
 
   onProjectSelected(project: Project) {
@@ -65,6 +86,7 @@ export class ProjectsPageComponent {
         name: this.todoForm.value.name || '',
         description: '',
         isComplete: false,
+        highlight: false
       };
       this.todoListServiceService.createTodo (newTodo).subscribe(todo => {
         this.todoList.push(todo);
@@ -75,10 +97,12 @@ export class ProjectsPageComponent {
   }
 
   deleteTodo(todo: Todo): void {
-    const index = this.todoList.indexOf(todo);
-    if (index > -1) {
-      this.todoList.splice(index, 1);
-    }
+    this.todoListServiceService.deleteTodo(todo.id).subscribe(() => {
+      const index = this.todoList.indexOf(todo);
+      if (index > -1) {
+        this.todoList.splice(index, 1);
+      }
+    });
   }
 
   updateIsComplete(event: Event, todo: Todo): void {
@@ -92,6 +116,13 @@ export class ProjectsPageComponent {
     this.todoList.forEach((todo, index) => {
       todo.order = index;
       this.todoListServiceService.updateTodo(todo).subscribe();
+    });
+  }
+
+  deleteProject(project: Project): void {
+    this.projectService.deleteProject(project.id).subscribe(() => {
+      this.projects = this.projects.filter(p => p.id !== project.id);
+      this.selectedProject = null;
     });
   }
 }

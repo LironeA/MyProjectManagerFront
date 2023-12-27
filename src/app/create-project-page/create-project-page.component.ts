@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
-import { Project } from '../models';
+import { Project, User } from '../models';
 import { ProjectService } from '../project-service.service';
 import { Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { UserService } from '../user.service';
 
 
 @Component({
@@ -15,11 +16,16 @@ export class CreateProjectPageComponent implements OnInit {
   projectForm = new FormGroup({
     name: new FormControl('', Validators.required),
     description: new FormControl(''),
+    user : new FormControl('')
   });
+  users: User[] = [];
 
-  constructor(private projectService: ProjectService, private router: Router) { }
+  constructor(private projectService: ProjectService, private userService: UserService, private router: Router) { }
 
   ngOnInit(): void {
+    this.userService.getUsers().subscribe(users => {
+      this.users = users;
+    });
   }
 
   onSubmit(): void {
@@ -28,6 +34,7 @@ export class CreateProjectPageComponent implements OnInit {
         id: 0,
         name: this.projectForm.value.name || '',
         description: this.projectForm.value.description || '',
+        userId: 1
        };
       this.projectService.createProject(project).subscribe({
         next: project => {

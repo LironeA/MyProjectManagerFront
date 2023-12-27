@@ -21,7 +21,11 @@
 }
 
 .project-list-element {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin: 1vh;
+    padding: 5px;
     border: 1px solid lightgray;
     border-radius: 1vh;
     background-color: rgba(211, 211, 211, 0.3);
@@ -74,13 +78,16 @@
   }
 
 
-/* For Webkit browsers */
 .project-list::-webkit-scrollbar {
-    width: 5px; /* Adjust to desired width */
+    width: 5px;
   }
   
   .project-list::-webkit-scrollbar-thumb {
     background-color: rgba(155, 155, 155, 0.7);
     border-radius: 20px;
+  }
+
+  .highlight {
+    background-color: yellow;
   }
 

@@ -7,9 +7,9 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class TodoListServiceService {
+export class TodoListService {
 
-  private apiUrl = 'https://myprojectmanagerwebappapi.azurewebsites.net/api/TodoesAPI';
+  private apiUrl = 'https://localhost:44370/api/TodoesAPI';
 
   constructor(private http: HttpClient) { }
 

@@ -2,6 +2,7 @@
     <div class="app-project-list" >
         <div class="project-list-element" *ngFor="let project of projects" (click)="onProjectSelected(project)">
             <p class="project-list-element-text">{{ project.name }}</p>
+            <button (click)="deleteProject(project); $event.stopPropagation()">Delete</button>      
         </div>
     </div>
     <div class="app-project-details-container">
@@ -11,12 +12,12 @@
             <div class="project-details-todolistlist">
                 <div class="add-todo">
                     <form [formGroup]="todoForm" (ngSubmit)="onSubmit()">
-                        <input type="text" formControlName="name" placeholder="Project name">
+                        <input type="text" formControlName="name" placeholder="Task name">
                         <button type="submit">Submit</button>
                       </form>
                 </div>
                 <div cdkDropList (cdkDropListDropped)="drop($event)">
-                    <div class="todo-item" *ngFor="let todo of todoList" cdkDrag>
+                    <div *ngFor="let todo of todoList" cdkDrag [ngClass]="{'todo-item':true,'highlight': todo.highlight}">
                       <input type="checkbox" [(ngModel)]="todo.isComplete" (change)="updateIsComplete($event, todo)">
                       <p>{{ todo.name }}</p>
                       <button (click)="deleteTodo(todo)">Delete</button>
